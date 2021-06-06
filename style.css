@@ -17,3 +17,23 @@
 body {
     background-color: #ebecf0;
 }
+
+.card-custom {
+    box-shadow: -5px -5px 20px #fff, 5px 5px  20px #babecc;
+    border-radius: 10px;
+    padding: 10px 20px;
+    transition: 0.2s;
+}
+
+.card-custom:hover {
+    box-shadow: -2px -2px 5px #fff, 2px 2px 5px #babecc;
+}
+
+.card-custom:active {
+        box-shadow: inset 1px 1px 2px #babecc, inset -1px -1px -2pc #fff;
+}
+
+.scrollable {
+    height: 400px;
+    overflow-y: scroll;
+}
