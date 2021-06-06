@@ -1,0 +1,19 @@
+* {
+    font-family: 'Electrolize', sans-serif;
+}
+
+:root {
+    --main-color: #113399;
+}
+
+.text-main {
+    color: var(--main-color);
+}
+
+.bg-main {
+    background-color: var(--main-color);
+}
+
+body {
+    background-color: #ebecf0;
+}
