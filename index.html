@@ -27,25 +27,25 @@
             <div class="col-12 col-md-3 mb-3">
                 <div class="card-custom d-flex flex-column h-100">
                     <p class="h4 mb-5">Casi totali</p>
-                    <p class="h2 mb-0 text-end text-main mt-auto">123</p>
+                    <p id="totalCases" class="h2 mb-0 text-end text-main mt-auto">123</p>
                 </div>
             </div>
             <div class="col-12 col-md-3 mb-3">
                 <div class="card-custom d-flex flex-column h-100">
                     <p class="h4 mb-5">Guariti totali</p>
-                    <p class="h2 mb-0 text-end text-main mt-auto">123</p>
+                    <p id="totalRecovered" class="h2 mb-0 text-end text-main mt-auto">123</p>
                 </div>
             </div>
             <div class="col-12 col-md-3 mb-3">
                 <div class="card-custom d-flex flex-column h-100">
                     <p class="h4 mb-5">Morti totali</p>
-                    <p class="h2 mb-0 text-end text-main mt-auto">123</p>
+                    <p id="totalDeath" class="h2 mb-0 text-end text-main mt-auto">123</p>
                 </div>
             </div>
             <div class="col-12 col-md-3 mb-3">
                 <div class="card-custom d-flex flex-column h-100">
                     <p class="h4 mb-5">Attuali</p>
-                    <p class="h2 mb-0 text-end text-main mt-auto">123</p>
+                    <p id="totalPositive" class="h2 mb-0 text-end text-main mt-auto">123</p>
                 </div>
             </div>
         </div>
@@ -55,66 +55,6 @@
         <div class="row">
             <div class="col-12 col-lg-6 scrollable">
                 <div id="cardWrapper" class="row p-3">
-                    <div class="col-12 col-md-5 my-4">
-                        <div class="card-custom p-3 pb-0 h-100">
-                            <p>Nome Regione</p>
-                            <p class="text-end h5 mb-0 text-main">23</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-5 my-4">
-                        <div class="card-custom p-3 pb-0 h-100">
-                            <p>Nome Regione</p>
-                            <p class="text-end h5 mb-0 text-main">23</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-5 my-4">
-                        <div class="card-custom p-3 pb-0 h-100">
-                            <p>Nome Regione</p>
-                            <p class="text-end h5 mb-0 text-main">23</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-5 my-4">
-                        <div class="card-custom p-3 pb-0 h-100">
-                            <p>Nome Regione</p>
-                            <p class="text-end h5 mb-0 text-main">23</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-5 my-4">
-                        <div class="card-custom p-3 pb-0 h-100">
-                            <p>Nome Regione</p>
-                            <p class="text-end h5 mb-0 text-main">23</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-5 my-4">
-                        <div class="card-custom p-3 pb-0 h-100">
-                            <p>Nome Regione</p>
-                            <p class="text-end h5 mb-0 text-main">23</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-5 my-4">
-                        <div class="card-custom p-3 pb-0 h-100">
-                            <p>Nome Regione</p>
-                            <p class="text-end h5 mb-0 text-main">23</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-5 my-4">
-                        <div class="card-custom p-3 pb-0 h-100">
-                            <p>Nome Regione</p>
-                            <p class="text-end h5 mb-0 text-main">23</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-5 my-4">
-                        <div class="card-custom p-3 pb-0 h-100">
-                            <p>Nome Regione</p>
-                            <p class="text-end h5 mb-0 text-main">23</p>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-5 my-4">
-                        <div class="card-custom p-3 pb-0 h-100">
-                            <p>Nome Regione</p>
-                            <p class="text-end h5 mb-0 text-main">23</p>
-                        </div>
-                    </div>                
                 </div>
             </div>
             <div class="col-12 col-lg-6 scrollable">
@@ -193,7 +133,37 @@
             let lastUpdatedFormatted = lastUpdated.split("T")[0].split("-").reverse().join("/")
             document.querySelector('#data').innerHTML = lastUpdatedFormatted
 
-            console.log(lastUpdatedFormatted);
+            let lastUpdatedData = sorted.filter(el => el.data == lastUpdated).sort( (a,b) => b.nuovi_positivi - a.nuovi_positivi)
+            console.log(lastUpdatedData);
+
+            let totalCases = lastUpdatedData.map(el =>el.totale_casi).reduce((t,n)=> t+n)
+            document.querySelector('#totalCases').innerHTML = totalCases
+
+            let totalRecovered = lastUpdatedData.map(el => el.dimessi_guariti).reduce((t,n)=>t+n)
+            document.querySelector('#totalRecovered').innerHTML = totalRecovered
+
+            let totalDeath = lastUpdatedData.map(el => el.deceduti).reduce((t,n)=>t+n)
+            document.querySelector('#totalDeath').innerHTML = totalDeath
+
+            let totalPositive = lastUpdatedData.map(el => el.totale_positivi).reduce((t,n)=>t+n)
+            document.querySelector('#totalPositive').innerHTML = totalPositive
+
+
+            let cardWrapper = document.querySelector('#cardWrapper')
+
+            lastUpdatedData.forEach(el =>{
+
+                let div = document.createElement('div')
+                div.classList.add('col-12','col-md-6','my-4')
+                div.innerHTML = 
+                `
+                <div class="card-custom p-3 pb-0 h-100">
+                    <p>${el.denominazione_regione}</p>
+                    <p class="text-end h5 mb-0 text-main">${el.nuovi_positivi}</p>
+                </div>
+                `
+                cardWrapper.appendChild(div)
+            })
         })
     </script>
   </body>
