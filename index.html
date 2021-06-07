@@ -14,6 +14,13 @@
   </head>
   <body>
 
+
+    <div class="modal-custom">
+        <div class="modal-custom-content">
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas magnam ipsum placeat, exercitationem, voluptatum, porro ex inventore perferendis quos non maiores voluptate error deserunt incidunt! Incidunt, quidem. Provident, illo. Ipsam?
+        </div>
+    </div>
+
     <div class="container py-5">
         <div class="row">
             <div class="col-12">
@@ -59,65 +66,21 @@
             </div>
             <div class="col-12 col-lg-6 scrollable">
                 <div id="progressWrapper" class="row p-3">
-                    <div class="col-12 mb-5">
-                        <p class="mb-0">Descrizione</p>
-                        <div class="progress rounded-0">
-                            <div class="progress-bar bg-main" style="width: 54%;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mb-5">
-                        <p class="mb-0">Descrizione</p>
-                        <div class="progress rounded-0">
-                            <div class="progress-bar bg-main" style="width: 54%;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mb-5">
-                        <p class="mb-0">Descrizione</p>
-                        <div class="progress rounded-0">
-                            <div class="progress-bar bg-main" style="width: 54%;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mb-5">
-                        <p class="mb-0">Descrizione</p>
-                        <div class="progress rounded-0">
-                            <div class="progress-bar bg-main" style="width: 54%;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mb-5">
-                        <p class="mb-0">Descrizione</p>
-                        <div class="progress rounded-0">
-                            <div class="progress-bar bg-main" style="width: 54%;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mb-5">
-                        <p class="mb-0">Descrizione</p>
-                        <div class="progress rounded-0">
-                            <div class="progress-bar bg-main" style="width: 54%;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mb-5">
-                        <p class="mb-0">Descrizione</p>
-                        <div class="progress rounded-0">
-                            <div class="progress-bar bg-main" style="width: 54%;">
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="container my-5 py-5">
+        <div class="row">
+            <div class="col-12">
+                <div id="trendNew" class="d-flex align-items-end border border-dark" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
 
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <script src="script.js"></script>
+
     <script>
         fetch('https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json')
         .then(response =>response.json())
@@ -139,6 +102,8 @@
             let totalCases = lastUpdatedData.map(el =>el.totale_casi).reduce((t,n)=> t+n)
             document.querySelector('#totalCases').innerHTML = totalCases
 
+
+
             let totalRecovered = lastUpdatedData.map(el => el.dimessi_guariti).reduce((t,n)=>t+n)
             document.querySelector('#totalRecovered').innerHTML = totalRecovered
 
@@ -150,6 +115,9 @@
 
 
             let cardWrapper = document.querySelector('#cardWrapper')
+            let progressWrapper = document.querySelector('#progressWrapper')
+
+            let todayMax = Math.max(...lastUpdatedData.map(el=>el.nuovi_positivi))
 
             lastUpdatedData.forEach(el =>{
 
@@ -157,14 +125,91 @@
                 div.classList.add('col-12','col-md-6','my-4')
                 div.innerHTML = 
                 `
-                <div class="card-custom p-3 pb-0 h-100">
+                <div class="card-custom p-3 pb-0 h-100" data-region="${el.denominazione_regione}">
                     <p>${el.denominazione_regione}</p>
                     <p class="text-end h5 mb-0 text-main">${el.nuovi_positivi}</p>
                 </div>
                 `
                 cardWrapper.appendChild(div)
+
+                let bar = document.createElement('div')
+                bar.classList.add('col-12','mb-5')
+                bar.innerHTML =
+                `
+                <p class="mb-0">${el.denominazione_regione}: ${el.nuovi_positivi}</p>
+                    <div class="progress rounded-0">
+                        <div class="progress-bar bg-main" style="width: ${100 * el.nuovi_positivi/todayMax}%;">
+                        </div>
+                    </div>
+                </div>
+                `
+                progressWrapper.appendChild(bar) 
             })
+
+
+            let modal = document.querySelector('.modal-custom')
+            let modalContent = document.querySelector('.modal-custom-content')
+
+            document.querySelectorAll('[data-region').forEach(el=>{
+                el.addEventListener('click', ()=>{
+                    
+                    let region = el.dataset.region
+                    modal.classList.add('active')
+
+                    let dataAboutRegion = lastUpdatedData.filter(el=>el.denominazione_regione == region)[0]
+
+
+                    modalContent.innerHTML =
+                    `
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="h2 text-main">${dataAboutRegion.denominazione_regione}</p>
+                            </div>
+                            <div class="col-12">
+                                <p class="lead">Totale casi: ${dataAboutRegion.totale_casi}</p>
+                                <p class="lead">Nuovi positivi: ${dataAboutRegion.nuovi_positivi}</p>
+                                <p class="lead">Deceduti: ${dataAboutRegion.deceduti}</p>
+                                <p class="lead">Guariti: ${dataAboutRegion.dimessi_guariti}</p>
+                                <p class="lead">Ricoverati con sintomi: ${dataAboutRegion.ricoverati_con_sintomi}</p>
+                            </div>
+                        </div>
+                    </div>
+                    `
+
+                })
+            })
+
+
+            window.addEventListener('click', function(e){
+                if(e.target == modal) {
+                    modal.classList.remove('active')
+                }
+            })
+
+
+
+            let trendNew = document.querySelector('#trendNew')
+
+            let lombardia = sorted.reverse().filter(el=>el.denominazione_regione == "Lombardia").map(el=>[el.data,el.nuovi_positivi])
+
+            let maxLombardia = Math.max(...lombardia.map(el=>el[1]))
+
+
+            lombardia.forEach(el => {
+                let col = document.createElement('div')
+                col.classlist.add('d-inline-block','bg-primary')
+                col.style.width = "10px"
+                col.style.marginRight = "1px"
+                col.style.height = `${el[1]/maxLombardia}%`
+
+                trendNew.appendChild(col)
+            })
+
         })
     </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
   </body>
 </html>

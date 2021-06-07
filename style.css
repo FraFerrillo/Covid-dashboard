@@ -37,3 +37,30 @@ body {
     height: 400px;
     overflow-y: scroll;
 }
+
+.modal-custom {
+    display: block;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    z-index: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: 20%;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: 0.2s;
+}
+
+.modal-custom-content {
+    background-color: #ebecf0;
+    margin: auto;
+    width: 70%;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.modal-custom.active {
+    z-index: 10;
+    opacity: 1;
+}
